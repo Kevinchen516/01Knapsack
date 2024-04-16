@@ -77,24 +77,6 @@ def solve(items, capacity, number_nodes,start_time):
     return best_value, best_path
 
 
-def main():
-    file_path = "DATA/DATASET/test/KP_s_08"
-    items = []
-    with open(file_path, 'r') as file:
-        number_nodes, capacity = map(int, file.readline().split())
-        for i in range(number_nodes):
-            weight, value = map(int, file.readline().split())
-            items.append(Item(weight, value, i))
-
-    # Sort items by value/weight ratio in descending order
-    items.sort(key=lambda item: -item.value / item.weight)
-    print(items)
-
-    best_value, best_path = solve(items, capacity, number_nodes)
-    print(f"Best Value: {best_value}")
-    backtrace = [1 if x else 0 for x in best_path]
-    print("Backtrace:", backtrace)
-
 
 def run_BnB(filename, time_limit, seed, number_nodes, capacity, values, weights):
     global time_
