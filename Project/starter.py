@@ -27,8 +27,8 @@ def main():
         solution.save_solution(x_best)
         #ls1.run_LS1(args.inst, args.time, args.seed)
     elif args.alg == 'LS2':
-        pass
-        # ls2.run_LS2(args.inst, args.time, args.seed)
+        #pass
+        ls2.run_LS2(args.inst, args.time, args.seed, n, capacity, values, weights)
 
 def load_data(inst):
     values = []
