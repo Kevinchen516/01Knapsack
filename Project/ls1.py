@@ -16,6 +16,8 @@ class LS1:
         self.initial_x = self.Initial_solution()
         self.local_best = self.evaluate(self.initial_x)
         self.cut_off = cut_off
+        self.sol_file = "LS1_ans\example_LS1_{}_{}.sol".format(self.cut_off,self.random_seed)
+        self.trace_file = "LS1_ans\example_LS1_{}_{}.trace".format(self.cut_off,self.random_seed)
 
     def evaluate(self,x):
         """
@@ -92,55 +94,61 @@ class LS1:
         random.seed(self.random_seed)
 
         start_time = np.float64(time.time())
+
+        with open(self.trace_file,"w") as file:
         
-        x_curr = self.initial_x  # x_curr will hold the current solution
-        x_best = x_curr[:]  # x_best will hold the best solution
-        ans_best = self.evaluate(x_best)
+            x_curr = self.initial_x  # x_curr will hold the current solution
+            x_best = x_curr[:]  # x_best will hold the best solution
+            ans_best = self.evaluate(x_best)
 
-        current_end = np.float64(time.time())
-        print(round(current_end-start_time,2),self.local_best[1],self.local_best[0]) #  # print the weight and value
-
-        k=0
-        
-        while (initial_temp/(k+1) > final_temp):
-
-            # Time restriction
-            current_end = time.time()
-            if round(current_end-start_time,2) > self.cut_off:
-                return x_best
-
-            m = 0 # Counting iteration in current temp
-
-            # Iteration in every temperature
-            while (m <= iter_per_temp):
-                m += 1
-
-                # Generate neighbourhood
-                s = self.flip_neighborhoods(x_curr)
-                s_evaluate = self.evaluate(s)
-
-                # Can't be bigger than the threshold
-                if (s_evaluate[1] <= self.weight_threshold_value):
-                     # get a better value
-                    if (s_evaluate[0] > ans_best[0]):
-                        x_best = s[:]
-                        x_curr = s[:]
-                        ans_best = s_evaluate[:]
-                        print(s_evaluate[:])
-                    # Probabl
-                    else:
-                        delta = self.evaluate(x_curr)[0] - self.evaluate(s)[0]
-                        change_or_not = random.uniform(0,1)
-                        randomness= math.exp(-1 * delta * (k+1) / (initial_temp))
-                        if (change_or_not < randomness):
-                            x_curr=s[:]
-            current_end = time.time()
-            loop_evaluate = self.evaluate(x_curr)
-            print(round(current_end-start_time,2),loop_evaluate[1],loop_evaluate[0]) # print [weight, value] for one temperature loop
-                
             current_end = np.float64(time.time())
-            k = k + 1
-        return x_best
+            # print(round(current_end-start_time,2),self.local_best[1],self.local_best[0]) #  # print the weight and value
+            input_str = str(round(current_end-start_time,2))+" "+str(int(self.local_best[1]))
+            file.write(input_str + "\n")
+
+            k=0
+        
+            while (initial_temp/(k+1) > final_temp):
+
+                # Time restriction
+                current_end = time.time()
+                if round(current_end-start_time,2) > self.cut_off:
+                    return x_best
+
+                m = 0 # Counting iteration in current temp
+
+                # Iteration in every temperature
+                while (m <= iter_per_temp):
+                    m += 1
+
+                    # Generate neighbourhood
+                    s = self.flip_neighborhoods(x_curr)
+                    s_evaluate = self.evaluate(s)
+
+                    # Can't be bigger than the threshold
+                    if (s_evaluate[1] <= self.weight_threshold_value):
+                        # get a better value
+                        if (s_evaluate[0] > ans_best[0]):
+                            x_best = s[:]
+                            x_curr = s[:]
+                            ans_best = s_evaluate[:]
+                            # print(s_evaluate[:])
+                        # Probabl
+                        else:
+                            delta = self.evaluate(x_curr)[0] - self.evaluate(s)[0]
+                            change_or_not = random.uniform(0,1)
+                            randomness= math.exp(-1 * delta * (k+1) / (initial_temp))
+                            if (change_or_not < randomness):
+                                x_curr=s[:]
+                current_end = time.time()
+                loop_evaluate = self.evaluate(x_curr)
+                # print(round(current_end-start_time,2),loop_evaluate[1],loop_evaluate[0]) # print [weight, value] for one temperature loop
+                input_loop_str = str(round(current_end-start_time,2)) + " " + str(int(loop_evaluate[1]))
+                file.write(input_loop_str + "\n")
+                    
+                current_end = np.float64(time.time())
+                k = k + 1
+            return x_best
         # return self.initial_x,x_best
 
     def save_solution(self,x):
@@ -152,12 +160,11 @@ class LS1:
         """
 
         best_value = str(self.evaluate(x)[0])
-        file_name = "LS1_ans\example_LS1_{}_{}.trace".format(self.cut_off,self.random_seed)
         try:
             os.mkdir("LS1_ans")
         except FileExistsError:
             pass
-        with open (file_name,"w") as file:
+        with open (self.sol_file,"w") as file:
             file.write(best_value + '\n')
             for item in x:
                 file.write(str(item)+" ")
