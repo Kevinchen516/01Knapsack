@@ -16,36 +16,33 @@ class LS1:
         self.initial_x = self.Initial_solution()
         self.local_best = self.evaluate(self.initial_x)
         self.cut_off = cut_off
-    
-    # def Initial_solution(self):
-    #     # Seeds
-    #     np.random.seed(self.random_seed)
-    #     random.seed(self.random_seed)
-    #     x = np.zeros(self.n)
-    #     return x
-
-    # def OneflipNeighborhood(self,x):
-    #     nbrhood = []
-
-    #     for i in range(0, self.n):
-    #         temp=list(x)
-    #         nbrhood.append(temp)
-    #         if nbrhood[i][i] == 1:
-    #             nbrhood[i][i] = 0
-    #         else:
-    #             nbrhood[i][i] = 1
-
-    #     return nbrhood
 
     def evaluate(self,x):
+        """
+        Caluculate the total value and total weight of one input array x.
+
+        Inputs:
+            np.array: x
+
+        Returns:
+            list: [totalValue,totalWeight]
+        """
         picked = x
         totalValue = np.dot(picked, self.value_list)  # compute the value of the knapsack selection
         totalWeight = np.dot(picked, self.weight_list)  # compute the weight value of the knapsack selection
         return [totalValue,totalWeight]
     
     def flip_neighborhoods(self,x):
+        """
+        Random pick one neighbourhood.
+
+        Input:
+            np.array: x.
+        Returns:
+            np.array: x_new.
+        """
         # change_idx_list = random.sample(range(self.n),round(self.n/2))
-        change_idx_list = random.sample(range(self.n),1)
+        change_idx_list = random.sample(range(self.n),5)
         new_x = np.copy(x)
 
         for idx in change_idx_list:
@@ -57,6 +54,12 @@ class LS1:
         return new_x
 
     def Initial_solution(self):
+        """
+        Initialize the solution using Greedy alg.
+
+        Returns:
+            np.array: x.
+        """
         # Seeds
         np.random.seed(self.random_seed)
         random.seed(self.random_seed)
@@ -74,6 +77,16 @@ class LS1:
         return x
 
     def simulated_Annealing(self, initial_temp, iter_per_temp, final_temp):
+        """
+        Run the annealing simulation.
+
+        Inputs:
+            int: initial_temp.
+            int: iter_per_temp.
+            int: final_temp.
+        Returns:
+            np.array: x.
+        """
         # Seeds
         np.random.seed(self.random_seed)
         random.seed(self.random_seed)
@@ -131,6 +144,13 @@ class LS1:
         # return self.initial_x,x_best
 
     def save_solution(self,x):
+        """
+        Write the answer to the file.
+
+        Inputs:
+            np.array: x
+        """
+
         best_value = str(self.evaluate(x)[0])
         file_name = "LS1_ans\example_LS1_{}_{}.trace".format(self.cut_off,self.random_seed)
         try:
