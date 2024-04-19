@@ -105,10 +105,8 @@ class LS1:
             # print(round(current_end-start_time,2),self.local_best[1],self.local_best[0]) #  # print the weight and value
             input_str = str(round(current_end-start_time,2))+" "+str(int(self.local_best[1]))
             file.write(input_str + "\n")
-
-            k=0
         
-            while (initial_temp/(k+1) > final_temp):
+            while (initial_temp > final_temp):
 
                 # Time restriction
                 current_end = time.time()
@@ -116,6 +114,7 @@ class LS1:
                     return x_best
 
                 m = 0 # Counting iteration in current temp
+                k = 1 # The constant
 
                 # Iteration in every temperature
                 while (m <= iter_per_temp):
@@ -137,7 +136,7 @@ class LS1:
                         else:
                             delta = self.evaluate(x_curr)[0] - self.evaluate(s)[0]
                             change_or_not = random.uniform(0,1)
-                            randomness= math.exp(-1 * delta * (k+1) / (initial_temp))
+                            randomness= math.exp(-1 * delta / k / (initial_temp))
                             if (change_or_not < randomness):
                                 x_curr=s[:]
                 current_end = time.time()
@@ -147,7 +146,7 @@ class LS1:
                 file.write(input_loop_str + "\n")
                     
                 current_end = np.float64(time.time())
-                k = k + 1
+                initial_temp = initial_temp * 0.996 # Update the temperature
             return x_best
         # return self.initial_x,x_best
 
@@ -159,7 +158,7 @@ class LS1:
             np.array: x
         """
 
-        best_value = str(self.evaluate(x)[0])
+        best_value = str(round(self.evaluate(x)[0]))
         try:
             os.mkdir("LS1_ans")
         except FileExistsError:
