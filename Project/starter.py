@@ -19,8 +19,9 @@ def main():
     if args.alg == 'BnB':
         bnb.run_BnB(args.inst, args.time, args.seed, n, capacity, values, weights)
     elif args.alg == 'Approx':
-        pass
-        #approx.run_Approx(args.inst, args.time, args.seed)
+        approx_instance = approx.Approx(args.time, args.inst)
+        approx_instance.run_Approx(capacity, values, weights, epsilon=1)
+        approx_instance.printResult()
     elif args.alg == 'LS1':
         solution = ls1.LS1(n,weights,values,capacity,args.seed,args.time)
         x_best = solution.simulated_Annealing(initial_temp = 1000, iter_per_temp = 100, final_temp=5)
@@ -36,7 +37,7 @@ def load_data(inst):
     with open(inst, 'r') as file:
         n, capacity = map(int, file.readline().strip().split())
         for _ in range(n):
-            value, weight = map(int, file.readline().strip().split())
+            value, weight = map(float, file.readline().strip().split())
             values.append(value)
             weights.append(weight)
     return n,capacity,values, weights
