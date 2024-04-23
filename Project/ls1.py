@@ -217,10 +217,10 @@ class LS1:
         Inputs:
             np.array: x
         """
-
         best_value = str(self.evaluate(x)[0])
         with open (self.sol_file,"w") as file:
             file.write(best_value + '\n')
-            for item in x:
-                file.write(str(int(item))+" ")
+            indices = np.where(x == 1)[0]
+            index_str = ','.join(map(str, indices))
+            file.write(index_str)
     
