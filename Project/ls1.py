@@ -55,10 +55,8 @@ class LS1:
         # change_idx_list = random.sample(range(self.n),round(self.n/2))
         if self.n < 5:
             change_idx_list = random.sample(range(self.n),1)
-        elif self.n <= 100:
-            change_idx_list = random.sample(range(self.n),5)
         else:
-            change_idx_list = random.sample(range(self.n),round(0.2*self.n))
+            change_idx_list = random.sample(range(self.n),3)
         new_x = np.copy(x)
 
         for idx in change_idx_list:
@@ -84,7 +82,7 @@ class LS1:
 
         # Initial the array with greedy method
         x = np.zeros(self.n)
-        total_weight = self.weight_threshold_value*0.95
+        total_weight = self.weight_threshold_value*0.85
 
         for unit_value, idx in unit_value:
             if self.weight_list[idx] <= total_weight:
@@ -156,14 +154,17 @@ class LS1:
 
             current_end = np.float64(time.time())
             # print(round(current_end-start_time,2),self.local_best[1],self.local_best[0]) #  # print the weight and value
-            input_str = str(round(current_end-start_time,2))+" "+str(int(self.local_best[1]))
+            input_str = str(current_end-start_time)+" "+str(int(self.local_best[1]))
             file.write(input_str + "\n")
         
             while (initial_temp > final_temp):
 
                 # Time restriction
-                current_end = time.time()
+                current_end = np.float64(time.time())
                 if round(current_end-start_time,2) > self.cut_off:
+                    # write the current best
+                    update_str = str(current_end-start_time) + " " + str(int(self.evaluate(x_best)[1]))
+                    file.write(update_str + "\n")
                     return x_best
 
                 m = 0 # Counting iteration in current temp
@@ -184,22 +185,28 @@ class LS1:
                             x_best = s[:]
                             x_curr = s[:]
                             ans_best = s_evaluate[:]
-                            # print(s_evaluate[:])
-                        # Probabl
+                            # print(initial_temp," ",s_evaluate[:])
+                            current_end = np.float64(time.time())
+                            update_str = str(current_end-start_time) + " " + str(int(s_evaluate[1]))
+                            # update_str = str(round(current_end-start_time,2)) + " " + str(int(s_evaluate[1]))
+                            file.write(update_str + "\n")
+                        # Probability
                         else:
                             delta = self.evaluate(x_curr)[0] - self.evaluate(s)[0]
                             change_or_not = random.uniform(0,1)
                             randomness= math.exp(-1 * delta / k / (initial_temp))
                             if (change_or_not < randomness):
                                 x_curr=s[:]
-                current_end = time.time()
-                loop_evaluate = self.evaluate(x_curr)
-                # print(round(current_end-start_time,2),loop_evaluate[1],loop_evaluate[0]) # print [weight, value] for one temperature loop
-                input_loop_str = str(round(current_end-start_time,2)) + " " + str(int(loop_evaluate[1]))
-                file.write(input_loop_str + "\n")
-                    
-                current_end = np.float64(time.time())
-                initial_temp = initial_temp * 0.996 # Update the temperature
+
+                 
+
+                initial_temp = initial_temp * 0.998 # Update the temperature
+                
+            # reach the final temperature
+            # current_end = np.float64(time.time())
+            # final_str = str(round(current_end-start_time,2)) + " " + str(int(ans_best[1]))
+            # file.write(final_str + "\n")
+            
             return x_best
         # return self.initial_x,x_best
 
@@ -211,7 +218,7 @@ class LS1:
             np.array: x
         """
 
-        best_value = str(round(self.evaluate(x)[0]))
+        best_value = str(self.evaluate(x)[0])
         with open (self.sol_file,"w") as file:
             file.write(best_value + '\n')
             for item in x:

@@ -24,7 +24,7 @@ def main():
         approx_instance.printResult()
     elif args.alg == 'LS1':
         solution = ls1.LS1(args.inst, n,weights,values,capacity,args.seed,args.time)
-        x_best = solution.simulated_Annealing(initial_temp = 10000, iter_per_temp = 1000, final_temp=5)
+        x_best = solution.simulated_Annealing(initial_temp = 100000, iter_per_temp = 1500, final_temp=5)
         solution.save_solution(x_best)
         #ls1.run_LS1(args.inst, args.time, args.seed)
     elif args.alg == 'LS2':
