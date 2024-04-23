@@ -5,9 +5,10 @@ import time
 import os
 
 class LS1:
-    def __init__(self, n, weight_list, value_list, weight_threshold_value, random_seed, cut_off):
+    def __init__(self, inst, n, weight_list, value_list, weight_threshold_value, random_seed, cut_off):
 
         # initial the 0-1 pack problem
+        self.example_name = os.path.basename(inst)
         self.n = n
         self.weight_list = np.array(weight_list)
         self.value_list = np.array(value_list)
@@ -16,8 +17,16 @@ class LS1:
         self.initial_x = self.Initial_solution()
         self.local_best = self.evaluate(self.initial_x)
         self.cut_off = cut_off
-        self.sol_file = "LS1_ans\example_LS1_{}_{}.sol".format(self.cut_off,self.random_seed)
-        self.trace_file = "LS1_ans\example_LS1_{}_{}.trace".format(self.cut_off,self.random_seed)
+        self.sol_file = " "
+        self.trace_file = " "
+
+    def input_size(self):
+        if self.n < 50:
+            self.sol_file = "LS1_ans\small\{}_LS1_{}_{}.sol".format(self.example_name,self.cut_off,self.random_seed)
+            self.trace_file = "LS1_ans\small\{}_LS1_{}_{}.trace".format(self.example_name,self.cut_off,self.random_seed)
+        else:
+            self.sol_file = "LS1_ans\large\{}_LS1_{}_{}.sol".format(self.example_name,self.cut_off,self.random_seed)
+            self.trace_file = "LS1_ans\large\{}_LS1_{}_{}.trace".format(self.example_name,self.cut_off,self.random_seed)
 
     def evaluate(self,x):
         """
@@ -44,7 +53,12 @@ class LS1:
             np.array: x_new.
         """
         # change_idx_list = random.sample(range(self.n),round(self.n/2))
-        change_idx_list = random.sample(range(self.n),5)
+        if self.n < 5:
+            change_idx_list = random.sample(range(self.n),1)
+        elif self.n <= 100:
+            change_idx_list = random.sample(range(self.n),5)
+        else:
+            change_idx_list = random.sample(range(self.n),round(0.2*self.n))
         new_x = np.copy(x)
 
         for idx in change_idx_list:
@@ -70,13 +84,37 @@ class LS1:
 
         # Initial the array with greedy method
         x = np.zeros(self.n)
-        total_weight = self.weight_threshold_value*0.9
+        total_weight = self.weight_threshold_value*0.95
 
         for unit_value, idx in unit_value:
             if self.weight_list[idx] <= total_weight:
                 x[idx] = 1
                 total_weight -= self.weight_list[idx]
         return x
+    
+    # def Initial_solution(self):
+    #     """
+    #     Initialize the solution.
+
+    #     Returns:
+    #         np.array: x.
+    #     """
+    #     # Seeds
+    #     np.random.seed(self.random_seed)
+    #     random.seed(self.random_seed)
+    #     init_idx_list = random.sample(range(self.n),10)
+
+    #     # Initial the array with greedy method
+    #     x = np.zeros(self.n)
+    #     for idx in init_idx_list:
+    #         x[idx] = 1
+    #     while (self.evaluate(x)[1]>self.weight_threshold_value):
+    #         init_idx_list = random.sample(range(self.n),10)
+    #         x = np.zeros(self.n)
+    #         for idx in init_idx_list:
+    #             x[idx] = 1
+
+    #     return x
 
     def simulated_Annealing(self, initial_temp, iter_per_temp, final_temp):
         """
@@ -93,7 +131,22 @@ class LS1:
         np.random.seed(self.random_seed)
         random.seed(self.random_seed)
 
+        # Make direction
+        try:
+            os.mkdir("LS1_ans")
+        except FileExistsError:
+            pass
+        
+        # Make direction
+        try:
+            os.mkdir("LS1_ans/large")
+            os.mkdir("LS1_ans/small")
+        except FileExistsError:
+            pass
+
         start_time = np.float64(time.time())
+
+        self.input_size()
 
         with open(self.trace_file,"w") as file:
         
@@ -159,12 +212,8 @@ class LS1:
         """
 
         best_value = str(round(self.evaluate(x)[0]))
-        try:
-            os.mkdir("LS1_ans")
-        except FileExistsError:
-            pass
         with open (self.sol_file,"w") as file:
             file.write(best_value + '\n')
             for item in x:
-                file.write(str(item)+" ")
+                file.write(str(int(item))+" ")
     
