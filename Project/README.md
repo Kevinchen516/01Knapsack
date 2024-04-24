@@ -15,5 +15,9 @@ simulated_Annealing(initial_temp = 100000, iter_per_temp = 1500, final_temp=5)
 ```
 to test different parameters
 ## For LS2(Hill Alimbing)
-
+All trace and solution will be writen to trace_hillclimbing folder
+to run the program:
+```python
+python3 starter.py -inst ./DATA/DATASET/large_scale/large_10 -alg LS2 -time 1 -seed 5 
+```
 ## For Approximation Algorithm
