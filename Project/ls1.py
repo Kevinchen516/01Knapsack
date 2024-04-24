@@ -1,4 +1,8 @@
-
+"""
+This code implement simulated annealing algorithm to the knapsack problem.
+In addiction to normal parameters(values, weight, weight_threshold), this algorithm require iter_per_temp (iteration_time) for each temperature,
+and it also needs initial_temp, final_temp for annealing control.
+"""
 import random
 import math
 import numpy as np
