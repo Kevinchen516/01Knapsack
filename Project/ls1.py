@@ -154,7 +154,7 @@ class LS1:
 
             current_end = np.float64(time.time())
             # print(round(current_end-start_time,2),self.local_best[1],self.local_best[0]) #  # print the weight and value
-            input_str = str(current_end-start_time)+" "+str(int(self.local_best[1]))
+            input_str = str(current_end-start_time)+" "+str(int(self.local_best[0]))
             file.write(input_str + "\n")
         
             while (initial_temp > final_temp):
@@ -163,7 +163,7 @@ class LS1:
                 current_end = np.float64(time.time())
                 if round(current_end-start_time,2) > self.cut_off:
                     # write the current best
-                    update_str = str(current_end-start_time) + " " + str(int(self.evaluate(x_best)[1]))
+                    update_str = str(current_end-start_time) + " " + str(int(self.evaluate(x_best)[0]))
                     file.write(update_str + "\n")
                     return x_best
 
@@ -187,7 +187,7 @@ class LS1:
                             ans_best = s_evaluate[:]
                             # print(initial_temp," ",s_evaluate[:])
                             current_end = np.float64(time.time())
-                            update_str = str(current_end-start_time) + " " + str(int(s_evaluate[1]))
+                            update_str = str(current_end-start_time) + " " + str(int(s_evaluate[0]))
                             # update_str = str(round(current_end-start_time,2)) + " " + str(int(s_evaluate[1]))
                             file.write(update_str + "\n")
                         # Probability
