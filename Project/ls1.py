@@ -1,8 +1,10 @@
+
 import random
 import math
 import numpy as np
 import time
 import os
+
 
 class LS1:
     def __init__(self, inst, n, weight_list, value_list, weight_threshold_value, random_seed, cut_off):
@@ -22,13 +24,15 @@ class LS1:
 
     def input_size(self):
         if self.n < 50:
-            self.sol_file = "LS1_ans\small\{}_LS1_{}_{}.sol".format(self.example_name,self.cut_off,self.random_seed)
-            self.trace_file = "LS1_ans\small\{}_LS1_{}_{}.trace".format(self.example_name,self.cut_off,self.random_seed)
+            self.sol_file = "LS1_ans\small\{}_LS1_{}_{}.sol".format(self.example_name, self.cut_off, self.random_seed)
+            self.trace_file = "LS1_ans\small\{}_LS1_{}_{}.trace".format(self.example_name, self.cut_off,
+                                                                        self.random_seed)
         else:
-            self.sol_file = "LS1_ans\large\{}_LS1_{}_{}.sol".format(self.example_name,self.cut_off,self.random_seed)
-            self.trace_file = "LS1_ans\large\{}_LS1_{}_{}.trace".format(self.example_name,self.cut_off,self.random_seed)
+            self.sol_file = "LS1_ans\large\{}_LS1_{}_{}.sol".format(self.example_name, self.cut_off, self.random_seed)
+            self.trace_file = "LS1_ans\large\{}_LS1_{}_{}.trace".format(self.example_name, self.cut_off,
+                                                                        self.random_seed)
 
-    def evaluate(self,x):
+    def evaluate(self, x):
         """
         Caluculate the total value and total weight of one input array x.
 
@@ -41,9 +45,9 @@ class LS1:
         picked = x
         totalValue = np.dot(picked, self.value_list)  # compute the value of the knapsack selection
         totalWeight = np.dot(picked, self.weight_list)  # compute the weight value of the knapsack selection
-        return [totalValue,totalWeight]
-    
-    def flip_neighborhoods(self,x):
+        return [totalValue, totalWeight]
+
+    def flip_neighborhoods(self, x):
         """
         Random pick one neighbourhood.
 
@@ -54,9 +58,9 @@ class LS1:
         """
         # change_idx_list = random.sample(range(self.n),round(self.n/2))
         if self.n < 5:
-            change_idx_list = random.sample(range(self.n),1)
+            change_idx_list = random.sample(range(self.n), 1)
         else:
-            change_idx_list = random.sample(range(self.n),3)
+            change_idx_list = random.sample(range(self.n), 3)
         new_x = np.copy(x)
 
         for idx in change_idx_list:
@@ -77,19 +81,19 @@ class LS1:
         # Seeds
         np.random.seed(self.random_seed)
         random.seed(self.random_seed)
-        unit_value = [(self.value_list[i]/self.weight_list[i], i) for i in range(self.n)]
+        unit_value = [(self.value_list[i] / self.weight_list[i], i) for i in range(self.n)]
         unit_value.sort(reverse=True)
 
         # Initial the array with greedy method
         x = np.zeros(self.n)
-        total_weight = self.weight_threshold_value*0.85
+        total_weight = self.weight_threshold_value * 0.85
 
         for unit_value, idx in unit_value:
             if self.weight_list[idx] <= total_weight:
                 x[idx] = 1
                 total_weight -= self.weight_list[idx]
         return x
-    
+
     # def Initial_solution(self):
     #     """
     #     Initialize the solution.
@@ -134,7 +138,7 @@ class LS1:
             os.mkdir("LS1_ans")
         except FileExistsError:
             pass
-        
+
         # Make direction
         try:
             os.mkdir("LS1_ans/large")
@@ -146,29 +150,29 @@ class LS1:
 
         self.input_size()
 
-        with open(self.trace_file,"w") as file:
-        
+        with open(self.trace_file, "w") as file:
+
             x_curr = self.initial_x  # x_curr will hold the current solution
             x_best = x_curr[:]  # x_best will hold the best solution
             ans_best = self.evaluate(x_best)
 
             current_end = np.float64(time.time())
             # print(round(current_end-start_time,2),self.local_best[1],self.local_best[0]) #  # print the weight and value
-            input_str = str(current_end-start_time)+" "+str(int(self.local_best[0]))
+            input_str = str(current_end - start_time) + " " + str(int(self.local_best[0]))
             file.write(input_str + "\n")
-        
+
             while (initial_temp > final_temp):
 
                 # Time restriction
                 current_end = np.float64(time.time())
-                if round(current_end-start_time,2) > self.cut_off:
+                if round(current_end - start_time, 2) > self.cut_off:
                     # write the current best
-                    update_str = str(current_end-start_time) + " " + str(int(self.evaluate(x_best)[0]))
+                    update_str = str(current_end - start_time) + " " + str(int(self.evaluate(x_best)[0]))
                     file.write(update_str + "\n")
                     return x_best
 
-                m = 0 # Counting iteration in current temp
-                k = 1 # The constant
+                m = 0  # Counting iteration in current temp
+                k = 1  # The constant
 
                 # Iteration in every temperature
                 while (m <= iter_per_temp):
@@ -187,30 +191,28 @@ class LS1:
                             ans_best = s_evaluate[:]
                             # print(initial_temp," ",s_evaluate[:])
                             current_end = np.float64(time.time())
-                            update_str = str(current_end-start_time) + " " + str(int(s_evaluate[0]))
+                            update_str = str(current_end - start_time) + " " + str(int(s_evaluate[0]))
                             # update_str = str(round(current_end-start_time,2)) + " " + str(int(s_evaluate[1]))
                             file.write(update_str + "\n")
                         # Probability
                         else:
                             delta = self.evaluate(x_curr)[0] - self.evaluate(s)[0]
-                            change_or_not = random.uniform(0,1)
-                            randomness= math.exp(-1 * delta / k / (initial_temp))
+                            change_or_not = random.uniform(0, 1)
+                            randomness = math.exp(-1 * delta / k / (initial_temp))
                             if (change_or_not < randomness):
-                                x_curr=s[:]
+                                x_curr = s[:]
 
-                 
+                initial_temp = initial_temp * 0.998  # Update the temperature
 
-                initial_temp = initial_temp * 0.998 # Update the temperature
-                
             # reach the final temperature
             # current_end = np.float64(time.time())
             # final_str = str(round(current_end-start_time,2)) + " " + str(int(ans_best[1]))
             # file.write(final_str + "\n")
-            
+
             return x_best
         # return self.initial_x,x_best
 
-    def save_solution(self,x):
+    def save_solution(self, x):
         """
         Write the answer to the file.
 
@@ -218,9 +220,9 @@ class LS1:
             np.array: x
         """
         best_value = str(self.evaluate(x)[0])
-        with open (self.sol_file,"w") as file:
+        with open(self.sol_file, "w") as file:
             file.write(best_value + '\n')
             indices = np.where(x == 1)[0]
             index_str = ','.join(map(str, indices))
             file.write(index_str)
-    
+

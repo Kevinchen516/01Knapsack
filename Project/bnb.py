@@ -1,3 +1,7 @@
+"""
+This code implements a bnb algorithm using python, it takes a time-limit parameter as a cut-off for
+the running time.The results of the program will be writen to BnB_sol and BnB_trace files
+"""
 import time
 import heapq
 import os
