@@ -1,3 +1,11 @@
+'''
+This hill climbing approach incorporates several sophisticated features such as adaptive neighborhood search and handling of local optima
+through random restarts, making it suitable for complex optimization problems like the knapsack problem
+where a balance between exploration (finding new potential solutions) and exploitation (improving the current solution) is crucial.
+https://athena.ecs.csus.edu/~gordonvs/215/WeeklyNotes/03A_hillClimbingSimulatedAnnealing.pdf
+'''
+
+
 import random
 import time
 import os
@@ -26,8 +34,12 @@ def get_neighbor(solution, capacity, num_items, weights, values, min_change=1, m
     if max_change is None:
         max_change = int(num_items * change_percentage)
 
+    max_change = max(max_change, min_change)
     # Calculate the number of changes, ensuring it stays within specified bounds
-    num_changes = random.randint(min_change, max_change)
+    if max_change >= min_change:
+        num_changes = max_change
+    else:
+        num_changes = min_change
 
     # Calculate value-to-weight ratio and create lists for additions and removals
     value_to_weight = [(values[i] / weights[i], i) for i in range(num_items)]
