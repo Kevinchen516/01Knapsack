@@ -14,7 +14,7 @@ You can modify this in ```starter.py```
 simulated_Annealing(initial_temp = 100000, iter_per_temp = 1500, final_temp=5)
 ```
 to test different parameters
-## For LS2(Hill Alimbing)
+## For LS2(Hill Climbing)
 ```python
 python3 starter.py -inst ./DATA/DATASET/large_scale/large_10 -alg LS2 -time 100 -seed 5 
 ```
