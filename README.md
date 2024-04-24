@@ -7,6 +7,7 @@
 
 
 # Approximation Algorithm
+using Python 3.9
 ```
 python starter.py -inst ./DATA/DATASET/test/KP_s_01 -alg Approx -time 300 -seed 0
 ```
