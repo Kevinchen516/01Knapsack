@@ -20,3 +20,16 @@ python3 starter.py -inst ./DATA/DATASET/large_scale/large_10 -alg LS2 -time 100 
 ```
 The output trace file will be automatically written to the local directory. The trace files and solution files that I get from the evaluation are in the `./trace_hillclimbing` directory.
 ## For Approximation Algorithm
+
+using Python 3.9
+```
+python starter.py -inst ./DATA/DATASET/test/KP_s_01 -alg Approx -time 300 -seed 0
+```
+The Approximation algorithm will run and output *.sol in ./Project/ApproxSolutions
+```
+Parameters:
+-inst the input trace file
+-alg  the algorithm need to run, for Approx is Approx
+-time the cutting off time(second)
+-seed unused for approximation algorithm
+```
