@@ -4,7 +4,7 @@
 ```python
 python3 starter.py -inst ./DATA/DATASET/large_scale/large_10 -alg BnB -time 1 -seed 5 
 ```
-### The program will write the result trace file in BnB_trace and solution file in BnB_sol.
+The program will write the result trace file in BnB_trace and solution file in BnB_sol.
 ## For LS1(Simulated Annealing)
 ```python
 python3 starter.py -inst ./DATA/DATASET/large_scale/large_10 -alg LS1 -time 1 -seed 5 
