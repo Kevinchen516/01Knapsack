@@ -6,7 +6,10 @@ python3 starter.py -inst ./DATA/DATASET/large_scale/large_10 -alg BnB -time 1 -s
 ```
 ### The program will write the result trace file in BnB_trace and solution file in BnB_sol.
 ## For LS1(Simulated Annealing)
-
+```python
+python3 starter.py -inst ./DATA/DATASET/large_scale/large_10 -alg LS1 -time 1 -seed 5 
+```
+You can modify the simulated_Annealing(initial_temp = 100000, iter_per_temp = 1500, final_temp=5) to test different parameters
 ## For LS2(Hill Alimbing)
 
 ## For Approximation Algorithm
